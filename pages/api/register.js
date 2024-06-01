@@ -1,7 +1,8 @@
 import connectDB from '../../lib/mongodb';
 import User from '../../models/User';
+import redirectIfAuthenticated from '../../middlewares/redirectIfAuthenticated ';
 
-export default async function handler(req, res) {
+const registerHandler = async (req, res) => {
   if (req.method === 'POST') {
     const { email, password, name } = req.body;
 
@@ -23,4 +24,6 @@ export default async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     res.status(405).end('Method Not Allowed');
   }
-}
+};
+
+export default redirectIfAuthenticated(registerHandler);

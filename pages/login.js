@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { verifyToken } from '../lib/auth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ const Login = () => {
     if (res.ok) {
       const data = await res.json();
       localStorage.setItem('token', data.token);
-      router.push('/');
+      router.push('/protected');
     } else {
       const data = await res.json();
       setError(data.message);
@@ -46,6 +47,24 @@ const Login = () => {
       </form>
     </div>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const { req } = context;
+  const token = req.cookies.token || '';
+
+  const user = verifyToken(token);
+
+  if (user) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
 };
 
 export default Login;
