@@ -22,7 +22,7 @@ const Login = () => {
     if (res.ok) {
       const data = await res.json();
       localStorage.setItem('token', data.token);
-      router.push('/protected');
+      router.push('/');
     } else {
       const data = await res.json();
       setError(data.message);
